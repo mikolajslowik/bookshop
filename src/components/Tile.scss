@@ -1,0 +1,71 @@
+.tile {
+  position: relative;
+  width: 600px;
+  height: 300px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  display: grid;
+  grid-template-rows: 300px;
+  grid-template-columns: 50% 50%;
+  .img {
+    margin: auto;
+    img {
+      max-height: 250px;
+    }
+  }
+  .details {
+    margin: auto;
+    li {
+      list-style: none;
+      padding: 15px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 24px;
+      p {
+        margin-bottom: 5px;
+        font-size: 16px;
+        font-weight: normal;
+      }
+      a {
+        text-decoration: none;
+        border-bottom: 1px dashed darkgoldenrod;
+        color: black;
+        transition: 0.2s;
+      }
+      a:hover {
+        color: darkgoldenrod;
+      }
+    }
+  }
+  .add {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    p {
+      font-size: 40px;
+      text-align: center;
+      color: red;
+      cursor: pointer;
+    }
+  }
+
+  .tooltip .tooltiptext {
+    opacity: 0;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    margin-left: 10px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    transition: 0.25s;
+  }
+
+  .tooltip:hover .tooltiptext {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,15 @@
+.homepage {
+  .searchinput {
+    display: flex;
+    margin: 50px auto;
+    height: 40px;
+    width: 400px;
+    font-size: 36px;
+    border-radius: 5px;
+  }
+  .list {
+    display: grid;
+    grid-template-columns: auto;
+    justify-content: center;
+  }
+}
