@@ -1,18 +1,24 @@
 import { useDispatch } from "react-redux";
-import { Book } from "../features/counter/bookSlice";
+import { useAppSelector } from "../app/hooks";
+import {
+  addToCart,
+  Book,
+  cart,
+  removeFromCart,
+} from "../features/counter/bookSlice";
 import "./Tile.scss";
 
-// export interface TileProps {
-//   book: Book;
-// }
+interface BookProps {
+  book: Book;
+}
 
-// export interface Books {
-//   books: Book[];
-// }
-
-export default function Tile(props: any) {
+export default function Tile(props: BookProps) {
+  const cartItems = useAppSelector(cart);
   const dispatch = useDispatch();
 
+  console.log(cartItems);
+
+  const isInCart = cartItems.includes(props.book);
   return (
     <div className="tile">
       <div className="img">
@@ -36,15 +42,19 @@ export default function Tile(props: any) {
             <li>
               <p>Title: {props.book.title}</p>
             </li>
+            <li>
+              <p>Pages: {props.book.pages}</p>
+            </li>
           </ul>
-          <div className="add" onClick={() => {}}>
-            <p>
-              {props.book ? (
-                <p style={{ color: "red" }}>-</p>
-              ) : (
-                <p style={{ color: "green" }}>+</p>
-              )}
-            </p>
+          <div className="counter"></div>
+          <div className="add">
+            {isInCart ? (
+              <p onClick={() => dispatch(removeFromCart(props.book))}>
+                remove from cart
+              </p>
+            ) : (
+              <p onClick={() => dispatch(addToCart(props.book))}>add to cart</p>
+            )}
           </div>
         </div>
       </div>

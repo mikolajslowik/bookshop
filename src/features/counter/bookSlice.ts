@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState, store } from "../../app/store";
+import { RootState } from "../../app/store";
 
 export interface Book {
   id: number;
@@ -10,6 +10,7 @@ export interface Book {
   pages: 0;
   price: 0;
   currency: string;
+  amount: number;
 }
 
 export interface CounterState {
@@ -32,12 +33,11 @@ const initialState: CounterState = {
 
 export const fetchData = createAsyncThunk("fetchData", async (_, thunkApi) => {
   let query: string = (thunkApi.getState() as RootState).booksData.query;
-  // let page: number = thunkApi.getState().booksData.page;
+  let page: number = (thunkApi.getState() as RootState).booksData.page;
   return axios({
     method: "GET",
-    url: `http://localhost:3001/api/books?page=1&search[title]=${query}&search[author]=${query}`,
+    url: `http://localhost:3001/api/books?page=${page}&search[title]=${query}&search[author]=${query}`,
   }).then((response) => {
-    console.log("response", response);
     return response.data;
   });
 });
@@ -52,12 +52,26 @@ export const bookSlice = createSlice({
         cart: [...state.cart, action.payload],
       };
     },
+    removeFromCart: (state, action) => {
+      return {
+        ...state,
+        cart: state.cart.filter((el) => {
+          return el.id !== action.payload.id;
+        }),
+      };
+    },
     setQuery: (state, action) => {
       return {
         ...state,
         query: action.payload,
       };
     },
+    // setBookAmount: (state, action) => {
+    //   return {
+    //     ...state,
+    //     books:
+    //   };
+    // },
     setPage: (state, action) => {
       return {
         ...state,
@@ -90,10 +104,15 @@ export const bookSlice = createSlice({
   },
 });
 
-export const { addToCart, setQuery, setPage } = bookSlice.actions;
+export const { addToCart, setQuery, setPage, removeFromCart } =
+  bookSlice.actions;
 
 export const selectBooks = (state: RootState) => state.booksData.books;
 
 export const query = (state: RootState) => state.booksData.query;
+
+export const page = (state: RootState) => state.booksData.page;
+
+export const cart = (state: RootState) => state.booksData.cart;
 
 export default bookSlice.reducer;

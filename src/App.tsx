@@ -1,20 +1,18 @@
 import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.scss";
-import { useAppDispatch, useAppSelector } from "./app/hooks";
+import { useAppDispatch } from "./app/hooks";
 import Cart from "./components/Cart";
 import DeliveryForm from "./components/DeliveryForm";
 import Homepage from "./components/Homepage";
 import Navigation from "./components/Navigation";
-import { fetchData, query } from "./features/counter/bookSlice";
+import { fetchData } from "./features/counter/bookSlice";
 
 function App() {
   const dispatch = useAppDispatch();
-  const storeQuery = useAppSelector(query);
-  console.log(storeQuery);
   useEffect(() => {
     dispatch(fetchData());
-  }, [storeQuery]);
+  }, []);
 
   return (
     <div className="App">
