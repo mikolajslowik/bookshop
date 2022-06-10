@@ -9,15 +9,17 @@
     top: 100px;
     right: 50px;
     z-index: 10;
-    width: 120px;
-    height: 60px;
-    background-color: goldenrod;
-    border: 3px solid green;
+    width: 150px;
+    height: 75px;
+    background-color: rgb(116, 170, 80);
+    border: 2px solid rgb(92, 143, 58);
     border-radius: 5px;
     font-size: 30px;
-    line-height: 60px;
+    line-height: 75px;
     text-align: center;
-    color: green;
+    margin: 30px;
     text-decoration: none;
+    color: black;
+    cursor: pointer;
   }
 }

@@ -40,6 +40,13 @@ td {
   border: 1px solid black;
 }
 
+.remove {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: rgb(255, 109, 109);
+}
+
 .totalCost {
   position: sticky;
   bottom: 0;

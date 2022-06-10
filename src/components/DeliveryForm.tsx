@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useAppSelector } from "../app/hooks";
-import { cart } from "../features/counter/bookSlice";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { cart, removeFromCart } from "../features/counter/bookSlice";
 import "./DeliveryForm.scss";
 
 function DeliveryForm() {
   const cartItems = useAppSelector(cart);
+  const dispatch = useAppDispatch();
 
   const count = cartItems.reduce((accumulator: any, value) => {
     return { ...accumulator, [value.id]: (accumulator[value.id] || 0) + 1 };
@@ -105,6 +106,14 @@ function DeliveryForm() {
               <td>{item.title}</td>
               <td>{item.amount}</td>
               <td>{item.price}</td>
+              <td style={{ border: "none" }}>
+                <button
+                  className="remove"
+                  onClick={() => dispatch(removeFromCart(item))}
+                >
+                  remove item
+                </button>
+              </td>
             </tr>
           ))}
         </table>
