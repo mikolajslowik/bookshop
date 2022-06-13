@@ -1,11 +1,21 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { cart, removeFromCart } from "../features/counter/bookSlice";
+import {
+  cart,
+  removeEverythingFromCart,
+  removeFromCart,
+} from "../features/counter/bookSlice";
 import "./DeliveryForm.scss";
+import Popup from "./Popup";
+import Sent from "./Sent";
 
 function DeliveryForm() {
   const cartItems = useAppSelector(cart);
   const dispatch = useAppDispatch();
+  const [isValid, setIsValid] = useState<boolean>(true);
+  const [isSent, setIsSent] = useState<boolean>(false);
 
   const count = cartItems.reduce((accumulator: any, value) => {
     return { ...accumulator, [value.id]: (accumulator[value.id] || 0) + 1 };
@@ -59,8 +69,51 @@ function DeliveryForm() {
     return setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  let isZipValid: Array<string> | null;
+
+  const checkZip = () => {
+    isZipValid = formData.zip_code.match(new RegExp(/(\d{2}-\d{3})+/g));
+  };
+
+  useEffect(() => {
+    checkZip();
+  }, [isValid]);
+
+  // console.log("ziplen", isZipValid?.length);
+  // console.log("zipval", isZipValid);
+
   const handleSubmit = (e: any) => {
-    return e.preventDefault(), console.log(formData);
+    if (
+      !formData.city ||
+      !formData.first_name ||
+      !formData.last_name ||
+      !isZipValid
+    ) {
+      return setIsValid(false), (formData.zip_code = "");
+    } else
+      return (
+        e.preventDefault(),
+        console.log("before post", formData),
+        axios
+          .post(
+            "http://localhost:3001/docs/#/Book/order",
+            JSON.stringify(formData)
+          )
+          .then((res) => {
+            if (res.status === 200) return setIsSent(true);
+          })
+          .then(
+            () => (
+              dispatch(removeEverythingFromCart()),
+              (formData.city = ""),
+              (formData.first_name = ""),
+              (formData.last_name = ""),
+              (formData.zip_code = ""),
+              (formData.order = []),
+              console.log("after post", formData)
+            )
+          )
+      );
   };
 
   let totalCost = 0;
@@ -84,6 +137,9 @@ function DeliveryForm() {
             ))}
           </>
         </form>
+        <Link className="further" role="button" to="/cart">
+          go back to cart
+        </Link>
         <input
           className="send"
           type="submit"
@@ -97,14 +153,14 @@ function DeliveryForm() {
           <tr>
             <td>author</td>
             <td>title</td>
-            <td>amount</td>
+            {/* <td>amount</td> */}
             <td>price</td>
           </tr>
           {cartItems.map((item) => (
             <tr>
               <td>{item.author}</td>
               <td>{item.title}</td>
-              <td>{item.amount}</td>
+              {/* <td>{item.amount}</td> */}
               <td>{item.price}</td>
               <td style={{ border: "none" }}>
                 <button
@@ -118,9 +174,14 @@ function DeliveryForm() {
           ))}
         </table>
       </div>
-      <div className="totalCost">Total price is {totalCost}pln</div>
+      <div className="totalCost">Total price is {totalCost} pln</div>
+      {isSent ? <Sent /> : null}
+      {!isValid ? <Popup isValid={isValid} setIsValid={setIsValid} /> : null}
     </div>
   );
 }
 
 export default DeliveryForm;
+function IsMatch(zip_code: string, arg1: string) {
+  throw new Error("Function not implemented.");
+}

@@ -2,35 +2,51 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   fetchData,
+  loading,
+  page,
+  query,
   selectBooks,
+  setPage,
   setQuery,
 } from "../features/counter/bookSlice";
 import "./Homepage.scss";
 import Tile from "./Tile";
 
 function Homepage() {
+  const isLoading = useAppSelector(loading);
   const books = useAppSelector(selectBooks);
-  // const p = useAppSelector(page);
   const dispatch = useAppDispatch();
+  let debounceTimeoutId: NodeJS.Timeout;
+  let lockScrollCallback: boolean;
 
-  // const [pageApi, setPageApi] = useState(1);
-
-  // const handleScroll = (event: any) => {
-  //   if (
-  //     window.innerHeight + event.target.documentElement.scrollTop >=
-  //     event.target.documentElement.scrollHeight
-  //   ) {
-  //     setPageApi(pageApi + 1);
-  //   } else return;
-  // };
-  // dispatch(setPage(pageApi));
-
-  // useEffect(() => {
-  //   window.addEventListener("scroll", handleScroll);
-  // }, [pageApi]);
+  const q = useAppSelector(query);
+  const p = useAppSelector(page);
 
   useEffect(() => {
     dispatch(fetchData());
+  }, [p, q]);
+
+  const handleScroll = (event: any) => {
+    if (
+      lockScrollCallback &&
+      window.innerHeight + event.target.documentElement.scrollTop + 1 >=
+        event.target.documentElement.scrollHeight
+    ) {
+      dispatch(setPage(1));
+    } else return;
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", (e) => {
+      clearTimeout(debounceTimeoutId);
+      lockScrollCallback = true;
+      debounceTimeoutId = setTimeout(() => {
+        handleScroll(e);
+        setTimeout(() => {
+          lockScrollCallback = false;
+        }, 100);
+      }, 100);
+    });
   }, []);
 
   return (
@@ -51,6 +67,7 @@ function Homepage() {
           ))}
         </>
       </div>
+      <div className="loading">{isLoading ? <p>loading</p> : null}</div>
     </div>
   );
 }

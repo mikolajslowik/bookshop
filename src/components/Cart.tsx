@@ -9,21 +9,20 @@ function Cart() {
 
   return (
     <div className="cart">
-      <div className="list">
+      {cartItems.length !== 0 ? (
         <>
-          {cartItems.map((book: any) => (
-            <Tile key={book.id} book={book} />
-          ))}
+          <div className="list">
+            {cartItems.map((book: any) => (
+              <Tile key={book.id} book={book} />
+            ))}
+          </div>
+          <Link className="further" role="button" to="/deliveryform">
+            order
+          </Link>
         </>
-      </div>
-      <Link
-        className="further"
-        role="button"
-        to="/deliveryform"
-        //  onClick={this.handleClick()}
-      >
-        order
-      </Link>
+      ) : (
+        <div className="emptyCart">your cart is empty</div>
+      )}
     </div>
   );
 }

@@ -16,8 +16,6 @@ export default function Tile(props: BookProps) {
   const cartItems = useAppSelector(cart);
   const dispatch = useDispatch();
 
-  console.log(cartItems);
-
   const isInCart = cartItems.includes(props.book);
   return (
     <div className="tile">

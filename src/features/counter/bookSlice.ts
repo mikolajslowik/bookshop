@@ -38,6 +38,8 @@ export const fetchData = createAsyncThunk("fetchData", async (_, thunkApi) => {
     method: "GET",
     url: `http://localhost:3001/api/books?page=${page}&search[title]=${query}&search[author]=${query}`,
   }).then((response) => {
+    console.log(response.data);
+
     return response.data;
   });
 });
@@ -60,18 +62,18 @@ export const bookSlice = createSlice({
         }),
       };
     },
+    removeEverythingFromCart: (state) => {
+      return {
+        ...state,
+        cart: [],
+      };
+    },
     setQuery: (state, action) => {
       return {
         ...state,
         query: action.payload,
       };
     },
-    // setBookAmount: (state, action) => {
-    //   return {
-    //     ...state,
-    //     books:
-    //   };
-    // },
     setPage: (state, action) => {
       return {
         ...state,
@@ -84,13 +86,13 @@ export const bookSlice = createSlice({
       builder.addCase(fetchData.fulfilled, (state, action) => {
         return {
           ...state,
-          books: action.payload.data,
+          books: [...state.books, ...action.payload.data],
         };
       }),
       builder.addCase(fetchData.pending, (state) => {
         return {
           ...state,
-          loaing: true,
+          loading: true,
         };
       }),
       builder.addCase(fetchData.rejected, (state, action) => {
@@ -104,8 +106,15 @@ export const bookSlice = createSlice({
   },
 });
 
-export const { addToCart, setQuery, setPage, removeFromCart } =
-  bookSlice.actions;
+export const {
+  addToCart,
+  setQuery,
+  setPage,
+  removeFromCart,
+  removeEverythingFromCart,
+} = bookSlice.actions;
+
+export const booksData = (state: RootState) => state.booksData;
 
 export const selectBooks = (state: RootState) => state.booksData.books;
 
@@ -114,5 +123,7 @@ export const query = (state: RootState) => state.booksData.query;
 export const page = (state: RootState) => state.booksData.page;
 
 export const cart = (state: RootState) => state.booksData.cart;
+
+export const loading = (state: RootState) => state.booksData.loading;
 
 export default bookSlice.reducer;
