@@ -14,6 +14,7 @@ export interface Book {
 }
 
 export interface CounterState {
+  totalRecords: number;
   loading: boolean;
   error: string | unknown;
   books: Book[];
@@ -23,6 +24,7 @@ export interface CounterState {
 }
 
 const initialState: CounterState = {
+  totalRecords: 0,
   loading: false,
   error: "",
   books: [],
@@ -31,18 +33,30 @@ const initialState: CounterState = {
   query: "",
 };
 
-export const fetchData = createAsyncThunk("fetchData", async (_, thunkApi) => {
-  let query: string = (thunkApi.getState() as RootState).booksData.query;
-  let page: number = (thunkApi.getState() as RootState).booksData.page;
-  return axios({
-    method: "GET",
-    url: `http://localhost:3001/api/books?page=${page}&search[title]=${query}&search[author]=${query}`,
-  }).then((response) => {
-    console.log(response.data);
-
-    return response.data;
+const removeDuplicates = (array: any[], prop: any) => {
+  return array.filter((item, index, arr) => {
+    return (
+      index ===
+      arr.findIndex((foundItem) => {
+        return foundItem[prop] === item[prop];
+      })
+    );
   });
-});
+};
+
+export const fetchData: any = createAsyncThunk(
+  "fetchData",
+  async (_, thunkApi) => {
+    let query: string = (thunkApi.getState() as RootState).booksData.query;
+    let page: number = (thunkApi.getState() as RootState).booksData.page;
+    return axios({
+      method: "GET",
+      url: `http://localhost:3001/api/books?page=${page}&search[title]=${query}&search[author]=${query}`,
+    }).then((response) => {
+      return response;
+    });
+  }
+);
 
 export const bookSlice = createSlice({
   name: "booksHandler",
@@ -86,7 +100,11 @@ export const bookSlice = createSlice({
       builder.addCase(fetchData.fulfilled, (state, action) => {
         return {
           ...state,
-          books: [...state.books, ...action.payload.data],
+          totalRecords: action.payload.data.metadata.total_records,
+          books: removeDuplicates(
+            [...state.books, ...action.payload.data.data],
+            "id"
+          ),
         };
       }),
       builder.addCase(fetchData.pending, (state) => {
@@ -125,5 +143,7 @@ export const page = (state: RootState) => state.booksData.page;
 export const cart = (state: RootState) => state.booksData.cart;
 
 export const loading = (state: RootState) => state.booksData.loading;
+
+export const totalRecords = (state: RootState) => state.booksData.totalRecords;
 
 export default bookSlice.reducer;

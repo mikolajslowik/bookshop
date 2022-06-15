@@ -8,6 +8,7 @@ import {
   selectBooks,
   setPage,
   setQuery,
+  totalRecords,
 } from "../features/counter/bookSlice";
 import "./Homepage.scss";
 import Tile from "./Tile";
@@ -19,11 +20,17 @@ function Homepage() {
   let debounceTimeoutId: NodeJS.Timeout;
   let lockScrollCallback: boolean;
 
+  const records = useAppSelector(totalRecords);
   const q = useAppSelector(query);
   const p = useAppSelector(page);
 
+  console.log("records", records);
+  console.log("books", books.length);
+
   useEffect(() => {
-    dispatch(fetchData());
+    if (records < books.length || records === 0) {
+      dispatch(fetchData());
+    }
   }, [p, q]);
 
   const handleScroll = (event: any) => {
