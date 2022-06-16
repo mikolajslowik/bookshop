@@ -62,6 +62,12 @@ export const bookSlice = createSlice({
   name: "booksHandler",
   initialState,
   reducers: {
+    changeAmount: (state, action) => {
+      return {
+        ...state,
+        cart: [...state.cart, action.payload.amount],
+      };
+    },
     addToCart: (state, action) => {
       return {
         ...state,

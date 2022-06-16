@@ -11,10 +11,11 @@ function Navigation() {
       path: "/cart",
       name: "cart",
     },
-    {
-      path: "/deliveryform",
-      name: "deliveryform",
-    },
+    // path left for development purposes
+    // {
+    //   path: "/deliveryform",
+    //   name: "deliveryform",
+    // },
   ];
 
   return (

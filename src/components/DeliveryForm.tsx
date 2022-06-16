@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
@@ -69,27 +69,10 @@ function DeliveryForm() {
     return setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  let isZipValid: Array<string> | null;
-
-  const checkZip = () => {
-    isZipValid = formData.zip_code.match(new RegExp(/(\d{2}-\d{3})+/g));
-  };
-
-  useEffect(() => {
-    checkZip();
-  }, [isValid]);
-
-  // console.log("ziplen", isZipValid?.length);
-  // console.log("zipval", isZipValid);
-
   const handleSubmit = (e: any) => {
-    if (
-      !formData.city ||
-      !formData.first_name ||
-      !formData.last_name ||
-      !isZipValid
-    ) {
-      return setIsValid(false), (formData.zip_code = "");
+    console.log("filledforms", formData);
+    if (!formData.city || !formData.first_name || !formData.last_name) {
+      return setIsValid(false);
     } else
       return (
         e.preventDefault(),
@@ -110,6 +93,7 @@ function DeliveryForm() {
               (formData.last_name = ""),
               (formData.zip_code = ""),
               (formData.order = []),
+              setIsValid(true),
               console.log("after post", formData)
             )
           )

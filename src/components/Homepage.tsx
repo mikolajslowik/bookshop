@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   fetchData,
-  loading,
   page,
   query,
   selectBooks,
@@ -14,21 +13,16 @@ import "./Homepage.scss";
 import Tile from "./Tile";
 
 function Homepage() {
-  const isLoading = useAppSelector(loading);
   const books = useAppSelector(selectBooks);
+  const recordsInTotal = useAppSelector(totalRecords);
+  const q = useAppSelector(query);
+  const p = useAppSelector(page);
   const dispatch = useAppDispatch();
   let debounceTimeoutId: NodeJS.Timeout;
   let lockScrollCallback: boolean;
 
-  const records = useAppSelector(totalRecords);
-  const q = useAppSelector(query);
-  const p = useAppSelector(page);
-
-  console.log("records", records);
-  console.log("books", books.length);
-
   useEffect(() => {
-    if (records < books.length || records === 0) {
+    if (recordsInTotal > books.length || recordsInTotal === 0) {
       dispatch(fetchData());
     }
   }, [p, q]);
@@ -74,7 +68,6 @@ function Homepage() {
           ))}
         </>
       </div>
-      <div className="loading">{isLoading ? <p>loading</p> : null}</div>
     </div>
   );
 }
