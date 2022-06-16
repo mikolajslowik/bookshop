@@ -70,13 +70,11 @@ function DeliveryForm() {
   };
 
   const handleSubmit = (e: any) => {
-    console.log("filledforms", formData);
     if (!formData.city || !formData.first_name || !formData.last_name) {
       return setIsValid(false);
     } else
       return (
         e.preventDefault(),
-        console.log("before post", formData),
         axios
           .post(
             "http://localhost:3001/docs/#/Book/order",
@@ -94,7 +92,6 @@ function DeliveryForm() {
               (formData.zip_code = ""),
               (formData.order = []),
               setIsValid(true),
-              console.log("after post", formData)
             )
           )
       );
@@ -137,6 +134,7 @@ function DeliveryForm() {
           <tr>
             <td>author</td>
             <td>title</td>
+            // left for further edvelopment 
             {/* <td>amount</td> */}
             <td>price</td>
           </tr>
